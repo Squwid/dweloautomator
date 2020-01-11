@@ -20,6 +20,7 @@
     "express": "^4.17.1",
     "ts-node-dev": "^1.0.0-pre.44",
     "tslint": "^5.20.1",
-    "typescript": "^3.7.4"
+    "typescript": "^3.7.4",
+    "typescript-logger": "^2.0.0"
   }
 }
