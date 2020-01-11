@@ -2,3 +2,5 @@ node_modules/
 dist/
 *.log
 .vscode
+
+dwelo/dwelo_test.go
