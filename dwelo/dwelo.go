@@ -5,12 +5,60 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"os"
+	"sync"
+	"time"
 
+	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
 )
 
 const url = "https://api.dwelo.com/v3"
+const tokenRefresh = time.Hour * 12
 
+// stuff for the session function dont mess with this
+type token struct {
+	value     string
+	retreived time.Time
+
+	lock *sync.RWMutex
+}
+
+var userToken token
+
+// getToken retreives a token using locks or the same one if the locks arent needed,
+// this will panic if a token is getting grabbed but an error occurs
+func getToken() string {
+	userToken.lock.RLock()
+	if time.Since(userToken.retreived) > tokenRefresh {
+		userToken.lock.RUnlock()
+
+		log.Info("[token] Getting new token...")
+
+		// refresh the token
+		req := NewLoginRequest(os.Getenv("DWELO_EMAIL"), os.Getenv("DWELO_PW"))
+		resp, err := req.login()
+		if err != nil {
+			log.Errorf("error logging in, going to panic: %v", err)
+			panic(err)
+		}
+
+		// set the new token using write locks
+		userToken.lock.Lock()
+		userToken.retreived = time.Now()
+		userToken.value = resp.Token
+		userToken.lock.Unlock()
+		return resp.Token
+	}
+	// get the token that already exists
+	t := userToken.value
+	userToken.lock.RUnlock()
+	log.Info("[token] Using existing token...")
+
+	return t
+}
+
+// login logs a user in and returns a true inside of the LoginResponse that gets returned
 func (req LoginRequest) login() (*LoginResponse, error) {
 	log.Infof("starting new login for %v", req.id)
 
@@ -62,4 +110,20 @@ func (req LoginRequest) login() (*LoginResponse, error) {
 	lr.loggedIn = true
 
 	return &lr, nil
+}
+
+// Do is basically the command structure to send a command
+func Do(w http.ResponseWriter, r *http.Request) {
+	reqID := uuid.New()
+	if r.Method != http.MethodPost {
+		log.Warnf("got a bad method for request: %v", reqID)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	userToken.lock.RLock()
+	if time.Since(userToken.retreived) > tokenRefresh {
+		// refresh the token
+
+	}
 }

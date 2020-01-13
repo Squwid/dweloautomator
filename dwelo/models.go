@@ -37,3 +37,9 @@ func NewLoginRequest(email, password string) *LoginRequest {
 		id:       uuid.New().String(),
 	}
 }
+
+// Command is the structure of what happens in dwelo
+type Command struct {
+	Command string `json:"command"`
+	Value   int    `json:"comandValue,omitempty"`
+}

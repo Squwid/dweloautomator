@@ -4,3 +4,5 @@ dist/
 .vscode
 
 dwelo/dwelo_test.go
+
+vendor
