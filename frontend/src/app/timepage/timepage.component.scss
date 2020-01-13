@@ -1,0 +1,20 @@
+.card {
+    width: auto;
+    margin: 1rem;
+    // background-color: darkgray;
+}
+
+.form-holder {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.form {
+    // background-color: orange;
+    width: fit-content;
+    margin:.5rem;
+}
+
+.button-wrapper {
+    margin-left: .25rem;
+}

@@ -1,0 +1,41 @@
+<button (click)="onAdd()">ADD</button>
+
+<div *ngFor="let keyframe of keyframes; let i = index;" [attr.data-index]="i">
+  <mat-card class="card">
+    <mat-card-content>
+      <div class="form-holder">
+        <!-- Field for day of week -->
+        <mat-form-field class="form" style="width: 5rem;">
+          <mat-select placeholder="Day" [(ngModel)]="keyframes[i].day">
+            <mat-option value="{{ day.value }}" *ngFor="let day of days">{{ day.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Field for heat cold or off -->
+        <mat-form-field class="form" style="width: 8rem;">
+          <mat-select placeholder="Heat/Cool">
+            <mat-option value="heat">Heat</mat-option>
+            <mat-option value="cool">Cool</mat-option>
+            <mat-option value="off">Off</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Form for temperature -->
+        <mat-form-field class="form" style="width: 8rem;">
+          <mat-select placeholder="Temperature">
+            <mat-option value="{{ temp }}" *ngFor="let temp of temps">{{ temp }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <ngx-timepicker-field class="form"></ngx-timepicker-field>
+
+        <!-- <p>{{ keyframe.id }}</p> -->
+      </div>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <button class="button-wrapper" mat-flat-button color="primary" (click)="onSave(keyframe.id)">Save</button>
+      <button class="button-wrapper" mat-flat-button color="warn" (click)="onDelete(keyframe.id)">Delete</button>
+    </mat-card-actions>
+  </mat-card>
+</div>
